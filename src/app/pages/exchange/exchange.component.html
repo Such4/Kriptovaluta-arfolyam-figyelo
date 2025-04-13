@@ -1,0 +1,22 @@
+<table class="exchange-table">
+    <thead>
+      <tr>
+        <th>Név</th>
+        <th>Helyszín</th>
+        <th>Támogatott kriptovaluták</th>
+        <th>Kereskedési díj</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let exchange of exchanges">
+        <td>{{ exchange.name }}</td>
+        <td>{{ exchange.location }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let crypto of exchange.supportedCryptos">{{ crypto }}</li>
+          </ul>
+        </td>
+        <td>{{ exchange.tradingFees | percent }}</td>
+      </tr>
+    </tbody>
+  </table>

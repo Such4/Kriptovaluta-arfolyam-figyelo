@@ -1,0 +1,61 @@
+<main>
+    <div class="table-container">
+      <table mat-table [dataSource]="watchlistCryptos" class="mat-elevation-z8">
+  
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Név </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.cryptocurrency.name }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="symbol">
+          <th mat-header-cell *matHeaderCellDef> Szimbólum </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.cryptocurrency.symbol }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> Ár (USD) </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.cryptocurrency.price | number:'1.2-2' }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="marketCap">
+          <th mat-header-cell *matHeaderCellDef> Piaci Kapitalizáció (USD) </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.cryptocurrency.marketCap | number:'1.0-0' }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="dailyVolume">
+          <th mat-header-cell *matHeaderCellDef> Napi Forgalom (USD) </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.cryptocurrency.dailyVolume | number:'1.0-0' }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="change">
+          <th mat-header-cell *matHeaderCellDef> Változás (%) </th>
+          <td mat-cell *matCellDef="let item"
+              [class.positive]="item.cryptocurrency.change >= 0"
+              [class.negative]="item.cryptocurrency.change < 0">
+            {{ item.cryptocurrency.change | cryptoChange:2 }}
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="addedAt">
+          <th mat-header-cell *matHeaderCellDef> Hozzáadás dátuma </th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.addedAt | date:'short' }}
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="['name', 'symbol', 'price', 'marketCap', 'dailyVolume', 'change', 'addedAt']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name', 'symbol', 'price', 'marketCap', 'dailyVolume', 'change', 'addedAt'];"></tr>
+      </table>
+    </div>
+  </main>
+  

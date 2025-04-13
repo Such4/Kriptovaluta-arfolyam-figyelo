@@ -1,0 +1,27 @@
+<div class="profile">
+  <h1>{{ user.username }}</h1>
+  <p>Email: {{ user.email }}</p>
+
+  <button class="toggle-button" (click)="toggleWatchlistTable()">Watchlist törlő</button>
+
+  <div *ngIf="showWatchlistTable" class="watchlist-table">
+    <h2>Watchlist</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Kód</th>
+          <th>Törlés</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let crypto of user.watchlist">
+          <td>{{ crypto }}</td>
+          <td>
+            <button class="delete-button" (click)="deleteWatchlistItem(crypto)">Törlés</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="user.watchlist.length === 0">A watchlist üres.</p>
+  </div>
+</div>

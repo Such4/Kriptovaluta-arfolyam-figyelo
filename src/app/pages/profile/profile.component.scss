@@ -1,0 +1,56 @@
+.profile {
+    max-width: 31.25rem;
+    margin: 1.25rem auto;
+    padding: 1.25rem;
+    border: 0.0625rem solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    text-align: center;
+  
+    p {
+      color: #666;
+      font-size: 1rem;
+      margin-bottom: 0.3125rem;
+    }
+  
+    .toggle-button {
+      margin: 0.625rem 0;
+      padding: 0.625rem 0.9375rem;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+  
+    .watchlist-table {
+      margin-top: 1.25rem;
+      text-align: left;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+  
+        th, td {
+          padding: 0.625rem;
+          border: 0.0625rem solid #ccc;
+          font-size: 1rem;
+        }
+  
+        th {
+          background-color: #34607e;
+          color: #fff;
+        }
+      }
+  
+      .delete-button {
+        padding: 0.3125rem 0.5rem;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+    }
+  }
+  

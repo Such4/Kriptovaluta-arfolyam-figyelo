@@ -1,0 +1,40 @@
+$primary-color: #34607e;
+$secondary-color: #fff;
+
+nav {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+ul {
+    display: flex;
+    list-style: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    gap: 1.875rem;
+}
+
+a {
+    text-decoration: none;
+    color: $secondary-color;
+    font-size: 25px;
+}
+
+mat-toolbar{
+    background-color: $primary-color;
+    color: $secondary-color;
+}
+
+
+footer {
+    background-color: $primary-color;
+    position: absolute;
+    width: 98.38%;
+    bottom: 0;
+    left: 0;
+    margin-left: 0; 
+    color: $secondary-color;
+    text-align: center;
+    padding: 1rem;
+  }

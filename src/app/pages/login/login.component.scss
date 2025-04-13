@@ -1,0 +1,27 @@
+$primary-color: #34607e;
+
+.login-container {
+    text-align: center;
+    max-width: 20rem;
+    margin: 5rem auto;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.3rem 3rem rgba(0, 0, 0, 0.2);
+    
+  
+    h1 {
+      margin-bottom: 3rem;
+      color: $primary-color;
+    }
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;  
+  }
+
+  .error-message {
+    color: #f44336;
+    margin-bottom: 1rem;
+  }
