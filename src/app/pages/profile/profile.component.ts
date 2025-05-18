@@ -13,6 +13,7 @@ import { NgIf } from '@angular/common';
 })
 export class ProfileComponent {
   user: User = {
+    id: 'dummyId',
     username: 'dummyUser',
     email: 'dummy@example.com',
     password: "2e315dcaa77983999bf11106c65229dc",
@@ -29,4 +30,3 @@ export class ProfileComponent {
     this.user.watchlist = this.user.watchlist.filter(cryptoId => cryptoId !== item);
   }
 }
-

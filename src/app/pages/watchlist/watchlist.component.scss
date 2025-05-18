@@ -1,36 +1,178 @@
-$primary-color: #34607e;
-$secondary-color: #F5F6F9;
-$text-color: #fff;
-$border-color: #fff;
-
-html, body {
-  height: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+.profile-container {
+  padding: 1.25rem;
+  max-width: 75rem;
+  margin: 0 auto;
 }
 
-main {
+.profile-header {
+  margin-bottom: 1.5rem;
+}
+
+.user-profile-card {
+  background-color: #f9f9f9;
+  border-radius: 0.5rem;
+}
+
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #3f51b5;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.watchlist-stats {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 7.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.highlights-section {
+  margin-bottom: 1.5rem;
+}
+
+.highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+  gap: 1rem;
+}
+
+.highlight-item {
+  background-color: #f5f5f5;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.highlight-label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.highlight-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.crypto-name {
+  font-weight: 500;
+}
+
+.crypto-change, .crypto-price {
+  font-weight: 500;
+}
+
+.watchlist-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.crypto-card {
+  position: relative;
+}
+
+.crypto-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: orange;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.remove-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.crypto-details {
+  margin-top: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  color: #666;
+}
+
+.detail-value {
+  font-weight: 500;
+}
+
+.empty-watchlist {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  color: #999;
+  margin-bottom: 1rem;
+}
+
+.market-overview {
+  margin-top: 1.5rem;
+}
+
+.overview-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.overview-item {
   flex: 1;
-  margin: 1rem;
-  margin-top: 2rem;
-  background-color: $secondary-color;
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    font-size: 1rem;
-    box-shadow: 0 0.3rem 3rem rgba(0, 0, 0, 0.2);
+  min-width: 9.375rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 0.25rem;
+}
 
-    th, td {
-      border: 1px solid $border-color;
-      padding: 0.5rem;
-      text-align: left;
-    }
-
-    th {
-      background-color: $primary-color;
-      color: $text-color;
-    }
-  }
+.loading-state {
+  text-align: center;
 }

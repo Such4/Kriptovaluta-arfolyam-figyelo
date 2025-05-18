@@ -1,61 +1,162 @@
-<main>
-    <div class="table-container">
-      <table mat-table [dataSource]="watchlistCryptos" class="mat-elevation-z8">
-  
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Név </th>
-          <td mat-cell *matCellDef="let item">
-            {{ item.cryptocurrency.name }}
-          </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="symbol">
-          <th mat-header-cell *matHeaderCellDef> Szimbólum </th>
-          <td mat-cell *matCellDef="let item">
-            {{ item.cryptocurrency.symbol }}
-          </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef> Ár (USD) </th>
-          <td mat-cell *matCellDef="let item">
-            {{ item.cryptocurrency.price | number:'1.2-2' }}
-          </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="marketCap">
-          <th mat-header-cell *matHeaderCellDef> Piaci Kapitalizáció (USD) </th>
-          <td mat-cell *matCellDef="let item">
-            {{ item.cryptocurrency.marketCap | number:'1.0-0' }}
-          </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="dailyVolume">
-          <th mat-header-cell *matHeaderCellDef> Napi Forgalom (USD) </th>
-          <td mat-cell *matCellDef="let item">
-            {{ item.cryptocurrency.dailyVolume | number:'1.0-0' }}
-          </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="change">
-          <th mat-header-cell *matHeaderCellDef> Változás (%) </th>
-          <td mat-cell *matCellDef="let item"
-              [class.positive]="item.cryptocurrency.change >= 0"
-              [class.negative]="item.cryptocurrency.change < 0">
-            {{ item.cryptocurrency.change | cryptoChange:2 }}
-          </td>
-        </ng-container>
-  
-        <ng-container matColumnDef="addedAt">
-          <th mat-header-cell *matHeaderCellDef> Hozzáadás dátuma </th>
-          <td mat-cell *matCellDef="let item">
-            {{ item.addedAt | date:'short' }}
-          </td>
-        </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="['name', 'symbol', 'price', 'marketCap', 'dailyVolume', 'change', 'addedAt']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['name', 'symbol', 'price', 'marketCap', 'dailyVolume', 'change', 'addedAt'];"></tr>
-      </table>
+<div class="profile-container" *ngIf="!isLoading; else loadingTemplate">
+  <div class="profile-header">
+    <mat-card class="user-profile-card">
+      <mat-card-header>
+        <div mat-card-avatar class="profile-avatar">
+          {{ getUserInitials() }}
+        </div>
+        <mat-card-title>{{ user?.username || 'Felhasználó' }} kriptó portfóliója</mat-card-title>
+        <mat-card-subtitle>{{ user?.email || 'Nincs email cím megadva' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="watchlist-stats">
+          <div class="stat-item">
+            <div class="stat-label">Kriptovaluták</div>
+            <div class="stat-value">{{ stats.total }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Portfólió értéke</div>
+            <div class="stat-value">{{ formatCurrency(stats.totalValue) }}</div>
+          </div>
+          <div *ngIf="!isPerformanceLoading" class="stat-item">
+            <div class="stat-label">Változás</div>
+            <div class="stat-value">
+              {{ performanceMetrics.averageChange | cryptoChange }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="watchlist-container" *ngIf="watchlistItems.length > 0; else emptyWatchlist">
+    <h2>A watchlisted</h2>
+    <div class="highlights-section" *ngIf="!isPerformanceLoading">
+      <mat-card class="highlight-card">
+        <mat-card-header>
+          <mat-card-title>A portfóliód legjobbjai és rosszabjai</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="highlight-grid">
+            <div class="highlight-item" *ngIf="stats.bestPerformer">
+              <div class="highlight-label">Legjobban teljesítő</div>
+              <div class="highlight-value">
+                <span class="crypto-name">{{ stats.bestPerformer.name }}</span>
+                <span class="crypto-change positive-change">{{ formatPercentage(stats.bestPerformer.change) }}</span>
+              </div>
+            </div>
+            <div class="highlight-item" *ngIf="stats.worstPerformer">
+              <div class="highlight-label">Legrosszabbul teljesítő</div>
+              <div class="highlight-value">
+                <span class="crypto-name">{{ stats.worstPerformer.name }}</span>
+                <span class="crypto-change negative-change">{{ formatPercentage(stats.worstPerformer.change) }}</span>
+              </div>
+            </div>
+            <div class="highlight-item" *ngIf="stats.highestValue">
+              <div class="highlight-label">Legnagyobb értékű</div>
+              <div class="highlight-value">
+                <span class="crypto-name">{{ stats.highestValue.name }}</span>
+                <span class="crypto-price">{{ formatCurrency(stats.highestValue.price) }}</span>
+              </div>
+            </div>
+            <div class="highlight-item" *ngIf="stats.lowestValue">
+              <div class="highlight-label">Legalacsonyabb értékű</div>
+              <div class="highlight-value">
+                <span class="crypto-name">{{ stats.lowestValue.name }}</span>
+                <span class="crypto-price">{{ formatCurrency(stats.lowestValue.price) }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
-  </main>
-  
+    <div class="watchlist-items">
+      <mat-card *ngFor="let item of watchlistItems" class="crypto-card">
+        <mat-card-header>
+          <div mat-card-avatar class="crypto-avatar">
+            {{ item.cryptocurrency.symbol.charAt(0) }}
+          </div>
+          <mat-card-title>{{ item.cryptocurrency.name }} ({{ item.cryptocurrency.symbol }})</mat-card-title>
+          <button mat-icon-button color="warn" class="remove-button" 
+                  (click)="removeFromWatchlist(item.cryptocurrency.id)" 
+                  aria-label="Remove from watchlist">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="crypto-details">
+            <div class="detail-row">
+              <div class="detail-label">Ár:</div>
+              <div class="detail-value">{{ item.cryptocurrency.price || formatCurrency }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Piaci kapitalizáció:</div>
+              <div class="detail-value">
+                {{ item.cryptocurrency.marketCap | formatLargeNumber }}
+            </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Forgalom (24 óra):</div>
+              <div class="detail-value">{{ item.cryptocurrency.dailyVolume | formatLargeNumber }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Változás (24 óra):</div>
+              <div class="detail-value">
+                  {{ item.cryptocurrency.change | cryptoChange }}
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <ng-template #emptyWatchlist>
+    <div class="empty-watchlist">
+      <mat-card>
+        <mat-card-content>
+          <div class="empty-state">
+            <mat-icon class="empty-icon">visibility_off</mat-icon>
+            <h3>A watchlisted üres.</h3>
+            <p>Nézz körül és adj hozzá kriptovalutákat a watchlistedhez!</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
+  <div class="market-overview" *ngIf="!isPerformanceLoading && watchlistItems.length > 0">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Watchlisted összegzése</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="overview-stats">
+          <div class="overview-item">
+            <div class="overview-label">Össz piaci kapitalizáció</div>
+            <div class="overview-value">{{ performanceMetrics.totalMarketCap | formatLargeNumber }}</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-label">24 órás forgalom</div>
+            <div class="overview-value">{{ performanceMetrics.totalVolume | formatLargeNumber }}</div>
+          </div>
+          <div class="overview-item">
+            <div class="overview-label">Változás</div>
+            <div class="overview-value">
+              {{ performanceMetrics.averageChange | cryptoChange }}
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<ng-template #loadingTemplate>
+  <div class="loading-container">
+    <mat-card>
+      <mat-card-content>
+        <div class="loading-state">
+          <h3>A portfóliód betöltése folyamatban...</h3>
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>

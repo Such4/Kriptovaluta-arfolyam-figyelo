@@ -1,37 +1,64 @@
 <div class="signup-container">
-    <h1>Regisztráció</h1>
-    @if (showForm) {
-        <form [formGroup]="signUpForm" (ngSubmit)="signup()" class="signup-form">
-          <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" formControlName="email">
-              <mat-icon matSuffix>email</mat-icon>
-            </mat-form-field>
-  
-          <div class="name-row" formGroupName="username">
-            <mat-form-field appearance="outline">
-              <mat-label>Felhasználónév</mat-label>
-              <input matInput formControlName="username">
-              <mat-icon matSuffix>person</mat-icon>
-            </mat-form-field>
-            </div>
-    
-          <mat-form-field appearance="outline">
-            <mat-label>Jelszó</mat-label>
-            <input matInput type="password" formControlName="password">
-            <mat-icon matSuffix>lock</mat-icon>
-          </mat-form-field>
-    
-          <mat-form-field appearance="outline">
-            <mat-label>Jelszó mégegyszer</mat-label>
-            <input matInput type="password" formControlName="rePassword">
-            <mat-icon matSuffix>lock</mat-icon>
-          </mat-form-field>
-    
-          <div class="buttons-row">
-            <button mat-flat-button color="primary" type="submit">Regisztráció</button>
-            <button mat-flat-button [routerLink]="['/login']">Már van fiókod?</button>
-          </div>
-        </form>
-        }
+  <div class="signup-content">
+    <h2>Regisztráció</h2> 
+    <div class="spinner-container" *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Fiókod létrehozása...</p>
+    </div>
+    <div *ngIf="showForm">
+      <form [formGroup]="signUpForm" (ngSubmit)="signup()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Felhasználónév</mat-label>
+          <input matInput formControlName="username" placeholder="Felhasználónév" required>
+          <mat-error *ngIf="signUpForm.get('username')?.hasError('required')">
+            A felhasználónév kötelező
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Email" required>
+          <mat-error *ngIf="signUpForm.get('email')?.hasError('required')">
+            Email cím kötelező
+          </mat-error>
+          <mat-error *ngIf="signUpForm.get('email')?.hasError('email')">
+            Adjon meg egy helyes email címet
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Jelszó</mat-label>
+          <input matInput formControlName="password" type="password" placeholder="Jelszó" required>
+          <mat-error *ngIf="signUpForm.get('password')?.hasError('required')">
+            Jelszó szükséges
+          </mat-error>
+          <mat-error *ngIf="signUpForm.get('password')?.hasError('minlength')">
+            A jelszónak 6 karakternek kell lennie legalább
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Jelszó ismét</mat-label>
+          <input matInput formControlName="rePassword" type="password" placeholder="Jelszó ismét" required>
+          <mat-error *ngIf="signUpForm.get('rePassword')?.hasError('required')">
+            Ismételd meg a jelszavad
+          </mat-error>
+        </mat-form-field>
+        
+        <div class="error-message" *ngIf="signupError">
+          {{ signupError }}
+        </div>
+        
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="signUpForm.invalid">
+            Regisztráció
+          </button>
+          
+          <p class="login-link">
+            Van már fiókod? <a routerLink="/login">Login</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
