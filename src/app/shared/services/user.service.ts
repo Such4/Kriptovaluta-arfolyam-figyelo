@@ -16,6 +16,45 @@ export class UserService {
     private authService: AuthService
   ) { }
 
+  getCurrentUser(): Observable<User | null> {
+    return this.authService.currentUser.pipe(
+      switchMap(authUser => {
+        if (!authUser) {
+          return of(null);
+        }
+        
+        const userDocRef = doc(this.firestore, 'Users', authUser.uid);
+        return from(getDoc(userDocRef).then(userDoc => {
+          if (!userDoc.exists()) {
+            return null;
+          }
+          
+          const userData = userDoc.data() as User;
+          return { ...userData, id: authUser.uid };
+        }).catch(error => {
+          console.error('Hiba a felhasználó adatai lekérése közben:', error);
+          return null;
+        }));
+      })
+    );
+  }
+  
+  updateUsername(userId: string, newUsername: string): Observable<boolean> {
+    if (!userId) {
+      return of(false);
+    }
+    
+    const userDocRef = doc(this.firestore, 'Users', userId);
+    return from(updateDoc(userDocRef, {
+      username: newUsername
+    }).then(() => true)
+      .catch(error => {
+        console.error('Hiba a felhasználónév frissítése közben:', error);
+        throw error;
+      })
+    );
+  }
+
   getUserWatchlist(): Observable<{
     user: User | null,
     watchlistItems: watchlist[],
@@ -176,7 +215,7 @@ export class UserService {
       watchlistSnapshot.forEach(doc => {
         const data = doc.data();
         if (data && data['cryptoId'] && data['addedAt']) {
-          watchlistTimestamps.set(data['cryptoId'], data['addedAt'].toDate());
+          watchlistTimestamps.set(data['cryptoId'], data['addedAt'].toDate())
         }
       });
 

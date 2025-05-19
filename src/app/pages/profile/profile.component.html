@@ -1,27 +1,122 @@
-<div class="profile">
-  <h1>{{ user.username }}</h1>
-  <p>Email: {{ user.email }}</p>
-
-  <button class="toggle-button" (click)="toggleWatchlistTable()">Watchlist törlő</button>
-
-  <div *ngIf="showWatchlistTable" class="watchlist-table">
-    <h2>Watchlist</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Kód</th>
-          <th>Törlés</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let crypto of user.watchlist">
-          <td>{{ crypto }}</td>
-          <td>
-            <button class="delete-button" (click)="deleteWatchlistItem(crypto)">Törlés</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <p *ngIf="user.watchlist.length === 0">A watchlist üres.</p>
+<div class="profile-container">
+  <div class="profile-header">
+    <mat-card class="user-profile-card">
+      <mat-card-header>
+        <div mat-card-avatar class="profile-avatar">
+          {{ getUserInitials() }}
+        </div>
+        <mat-card-title>Profil beállítások</mat-card-title>
+        <mat-card-subtitle>A felhasználói adataid kezelése</mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
   </div>
+  <div class="profile-sections">
+    <div class="profile-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Jelszó változtatás</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+            <div class="form-content">
+              <div class="form-field">
+                <div class="field-label">Jelenlegi jelszó</div>
+                <div class="password-input">
+                  <input 
+                    [type]="passwordHidden ? 'password' : 'text'" 
+                    formControlName="currentPassword" 
+                    placeholder="A jelenlegi jelszavad">
+                  <button type="button" class="password-toggle" (click)="passwordHidden = !passwordHidden">
+                    <mat-icon>{{ passwordHidden ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                </div>
+                <div class="error-message" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+                  A jelenlegi jelszó szükséges (minimum 6 karakter)
+                </div>
+              </div>
+          <div class="form-field">
+            <div class="field-label">Jelenlegi jelszó újból</div>
+            <div class="password-input">
+              <input 
+                [type]="confirmPasswordHidden ? 'password' : 'text'" 
+                formControlName="confirmCurrentPassword" 
+                placeholder="Jelenlegi jelszó újból">
+              <button type="button" class="password-toggle" (click)="confirmPasswordHidden = !confirmPasswordHidden">
+                <mat-icon>{{ confirmPasswordHidden ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="passwordForm.hasError('passwordsMismatch') && passwordForm.get('confirmCurrentPassword')?.touched">
+              A jelszavak nem egyeznek
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="field-label">Új jelszó</div>
+            <div class="password-input">
+              <input 
+                [type]="newPasswordHidden ? 'password' : 'text'" 
+                formControlName="newPassword" 
+                placeholder="Írd be az új jelszavad">
+              <button type="button" class="password-toggle" (click)="newPasswordHidden = !newPasswordHidden">
+                <mat-icon>{{ newPasswordHidden ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+              Az új jelszó szükséges (minimum 6 karakter)
+            </div>
+          </div>
+          <div class="message-container">
+            <div class="success-message" *ngIf="passwordSuccess">{{ passwordSuccess }}</div>
+            <div class="error-message" *ngIf="passwordError">{{ passwordError }}</div>
+          </div>
+          <button type="submit" class="submit-button" [disabled]="passwordForm.invalid || passwordLoading">
+            <span *ngIf="!passwordLoading">Jelszó frissítése</span>
+            <span *ngIf="passwordLoading">Frissítés folyamatban...</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div class="profile-section">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Felhasználónév változtatás</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="usernameForm" (ngSubmit)="changeUsername()">
+        <div class="form-content">
+          <div class="form-field">
+            <div class="field-label">Felhasználónév</div>
+            <input 
+              type="text" 
+              formControlName="username" 
+              placeholder="Írd be az új felhasználóneved">
+            <div class="error-message" *ngIf="usernameForm.get('username')?.invalid && usernameForm.get('username')?.touched">
+              A felhasználónév szükséges (minimum 3 karakter)
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="field-label">Jelenlegi jelszó</div>
+            <input 
+              type="password" 
+              formControlName="currentPassword" 
+              placeholder="Írd be a jelenlegi jelszavad">
+            <div class="error-message" *ngIf="usernameForm.get('currentPassword')?.invalid && usernameForm.get('currentPassword')?.touched">
+              A jelenlegi jelszavad szükséges (minimum 6 karakter)
+            </div>
+          </div>
+          <div class="message-container">
+            <div class="success-message" *ngIf="usernameSuccess">{{ usernameSuccess }}</div>
+            <div class="error-message" *ngIf="usernameError">{{ usernameError }}</div>
+          </div>
+          <button type="submit" class="submit-button" [disabled]="usernameForm.invalid || usernameLoading">
+            <span *ngIf="!usernameLoading">Felhasználónév frissítése</span>
+            <span *ngIf="usernameLoading">Frissítés folyamatban...</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+</div>
 </div>
